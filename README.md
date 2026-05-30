@@ -1,21 +1,46 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# 🔐 Calculator Vault
 
-# Run and deploy your AI Studio app
+A privacy-focused, dual-purpose Android app built with Kotlin & Jetpack Compose. On the surface it's a fully functional calculator. Hidden inside is a secure, offline password manager.
 
-This contains everything you need to run your app locally.
+## 🕵️ How It Works
 
-View your app in AI Studio: https://ai.studio/apps/5d789f0a-f76f-49b0-a83b-2886d0991696
+Open the app — it looks and works like a normal calculator.
+Type the secret PIN sequence (default: `0.000`) and the vault unlocks instantly.
+No button to press. No hint it exists.
 
-## Run Locally
+## ✨ Features
 
-**Prerequisites:**  [Android Studio](https://developer.android.com/studio)
+- ✅ Fully functional calculator with proper order of operations
+- 🔐 AES-128 encrypted password storage (offline only)
+- 🗂️ Category filters — Social, Work, Finance
+- 🔍 Search across all saved credentials
+- 📋 One-tap copy for username & password
+- 🎨 3 themes — Default Dark, Pastel Green, Bakery Cozy
+- 📤 Export vault as TXT or CSV
+- 🔑 Customizable secret PIN
+- ⚡ Quick-add templates for Facebook, Instagram, GitHub, Banking and more
+- 📴 Zero network calls — your data never leaves your device
 
+## 🛠️ Tech Stack
 
-1. Open Android Studio
-2. Select **Open** and choose the directory containing this project
-3. Allow Android Studio to fix any incompatibilities as it imports the project.
-4. Create a file named `.env` in the project directory and set `GEMINI_API_KEY` in that file to your Gemini API key (see `.env.example` for an example)
-5. Remove this line from the app's `build.gradle.kts` file: `signingConfig = signingConfigs.getByName("debugConfig")`
-6. Run the app on an emulator or physical device
+- Kotlin + Jetpack Compose
+- Room Database (SQLite)
+- ViewModel + StateFlow
+- Navigation Compose
+- AES/CBC/PKCS5 Encryption
+
+## 📱 Screenshots
+
+Coming soon
+
+## 🚀 Getting Started
+
+Clone the repo and open in Android Studio:
+
+git clone https://github.com/strangec137/calculator-vault.git
+
+Then build and run on any Android device (API 24+).
+
+## 🏴‍☠️ Made by
+
+Akagami no Shanks — Bangladesh 🇧🇩
