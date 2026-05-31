@@ -57,7 +57,7 @@ Then build and run on any Android device (API 24+).
 2. On your phone: Settings → Security → Enable "Install unknown apps"
 3. Open the APK file and tap Install
 
-Open in Android Studio and build.
+## build in Android Studio and .
 
 ## 🏴‍☠️ Made by
 
