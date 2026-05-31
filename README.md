@@ -1,4 +1,4 @@
-# 🔐 Calculator Vault
+# Calculator Vault
 
 A privacy-focused, dual-purpose Android app built with Kotlin & Jetpack Compose. On the surface it's a fully functional calculator. Hidden inside is a secure, offline password manager.
 
