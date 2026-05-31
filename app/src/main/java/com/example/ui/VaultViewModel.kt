@@ -44,6 +44,9 @@ class VaultViewModel(application: Application) : AndroidViewModel(application) {
     // Master secret PIN state
     val secretPin = MutableStateFlow(prefs.getString(pinKey, defaultPin) ?: defaultPin)
 
+    // Splash overlay state for One Piece / Whitebeard animation
+    val showWhitebeardSplash = MutableStateFlow(false)
+
     // Persistent application theme state
     val currentTheme = MutableStateFlow(prefs.getString(themeKey, "Default") ?: "Default")
 
@@ -322,7 +325,16 @@ class VaultViewModel(application: Application) : AndroidViewModel(application) {
      */
     private fun checkPinMatch() {
         if (displayText.value == secretPin.value) {
-            unlockDirectly()
+            showWhitebeardSplash.value = true
+            viewModelScope.launch {
+                delay(2500L)
+                _navigateToVault.emit(Unit)
+                showWhitebeardSplash.value = false
+                // Reset states to avoid immediate loops or staying locked in display
+                displayText.value = "0"
+                expressionPreview.value = ""
+                resetAutoLock()
+            }
         }
     }
 
@@ -331,7 +343,10 @@ class VaultViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun unlockDirectly() {
         viewModelScope.launch {
+            showWhitebeardSplash.value = true
+            delay(2500L)
             _navigateToVault.emit(Unit)
+            showWhitebeardSplash.value = false
             // Clear state slightly to avoid immediate loops on back button
             displayText.value = "0"
             expressionPreview.value = ""

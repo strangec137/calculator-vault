@@ -23,10 +23,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.ui.zIndex
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.example.R
 
 @Composable
 fun CalculatorScreen(
@@ -35,6 +43,7 @@ fun CalculatorScreen(
 ) {
     val displayText by viewModel.displayText.collectAsState()
     val expressionPreview by viewModel.expressionPreview.collectAsState()
+    val showWhitebeardSplash by viewModel.showWhitebeardSplash.collectAsState()
 
     // Precise color palette satisfying the disguised standard calculator look
     val darkBgColor = Color(0xFF0F0F0F) // Solid matte charcoal/black base
@@ -55,163 +64,217 @@ fun CalculatorScreen(
         listOf("0", ".", "⌫", "=")
     )
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(darkBgColor)
-            .statusBarsPadding()
-            .navigationBarsPadding(),
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        // Top AppBar area: Translucent/dark background containing the calculator action button and Settings gear action button
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0x990F0F0F))
-                .padding(horizontal = 8.dp, vertical = 6.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Calculator Icon Button (representing mathematical operators)
-            IconButton(
-                onClick = { },
-                modifier = Modifier.testTag("btn_calculator_icon_nav")
-            ) {
-                // Developer Note: To use the custom asset file 'image_3f4dff.png':
-                // 1. Copy the PNG/SVG file to your 'app/src/main/res/drawable/image_3f4dff.png' directory.
-                // 2. Import 'androidx.compose.ui.res.painterResource' and use:
-                //    Icon(
-                //        painter = painterResource(id = R.drawable.image_3f4dff),
-                //        contentDescription = "Hidden Vault Entry",
-                //        tint = Color.White.copy(alpha = 0.8f),
-                //        modifier = Modifier.size(24.dp)
-                //    )
-                Icon(
-                    imageVector = Icons.Default.Calculate,
-                    contentDescription = "Hidden Vault Entry",
-                    tint = Color.White.copy(alpha = 0.8f),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            // Settings/Gear Icon Button next to it
-            IconButton(
-                onClick = { },
-                modifier = Modifier.testTag("btn_settings_icon_nav")
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Vault Settings Link",
-                    tint = Color.White.copy(alpha = 0.8f),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-
-        // Display Panel: A large, minimal black display area for calculations
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .background(Color.Black)
-                .padding(horizontal = 24.dp, vertical = 20.dp),
-            contentAlignment = Alignment.BottomEnd
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.End
-            ) {
-                if (expressionPreview.isNotBlank()) {
-                    Text(
-                        text = expressionPreview,
-                        color = Color.Gray,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.End,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-                
-                Text(
-                    text = displayText,
-                    color = Color.White,
-                    fontSize = if (displayText.length > 8) 42.sp else 64.sp,
-                    fontWeight = FontWeight.Light,
-                    textAlign = TextAlign.End,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.testTag("calculator_display")
-                )
-            }
-        }
-
-        // Collapse/expand arrow icon right above the button pad on the far left side
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(darkBgColor)
-                .padding(horizontal = 20.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.UnfoldMore,
-                contentDescription = "Collapse/Expand keypad",
-                tint = Color.Gray.copy(alpha = 0.7f),
-                modifier = Modifier.size(20.dp)
-            )
-        }
-
-        // Calculator Buttons Grid Pad
+    Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .background(darkBgColor)
-                .padding(start = 16.dp, end = 16.dp, bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+                .statusBarsPadding()
+                .navigationBarsPadding(),
+            verticalArrangement = Arrangement.Bottom
         ) {
-            buttons.forEach { row ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(14.dp),
-                    verticalAlignment = Alignment.CenterVertically
+            // Top AppBar area: Translucent/dark background containing the calculator action button and Settings gear action button
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0x990F0F0F))
+                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Calculator Icon Button (representing mathematical operators)
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier.testTag("btn_calculator_icon_nav")
                 ) {
-                    row.forEach { char ->
-                        // Determine background and text colors according to exact specifications
-                        val backColor = when (char) {
-                            "AC", "()", "%", "÷" -> deepBlueCircle
-                            "×", "-", "+" -> deepBlueCircle
-                            "=" -> softMintGreenBg
-                            else -> softDarkGreyBg
-                        }
-                        
-                        val textColor = when (char) {
-                            "AC" -> lightBlueGreyText
-                            "()" -> lightBlueGreyText
-                            "%" -> lightBlueGreyText
-                            "=" -> darkGreenOperatorText
-                            else -> Color.White
-                        }
+                    // Developer Note: To use the custom asset file 'image_3f4dff.png':
+                    // 1. Copy the PNG/SVG file to your 'app/src/main/res/drawable/image_3f4dff.png' directory.
+                    // 2. Import 'androidx.compose.ui.res.painterResource' and use:
+                    //    Icon(
+                    //        painter = painterResource(id = R.drawable.image_3f4dff),
+                    //        contentDescription = "Hidden Vault Entry",
+                    //        tint = Color.White.copy(alpha = 0.8f),
+                    //        modifier = Modifier.size(24.dp)
+                    //    )
+                    Icon(
+                        imageVector = Icons.Default.Calculate,
+                        contentDescription = "Hidden Vault Entry",
+                        tint = Color.White.copy(alpha = 0.8f),
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
 
-                        // Map keyboard actions back to standard math symbols as supported by the parser
-                        val actionKey = when (char) {
-                            "÷" -> "/"
-                            "×" -> "*"
-                            else -> char
-                        }
+                // Settings/Gear Icon Button next to it
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier.testTag("btn_settings_icon_nav")
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Vault Settings Link",
+                        tint = Color.White.copy(alpha = 0.8f),
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
 
-                        CalculatorButton(
-                            text = char,
-                            backgroundColor = backColor,
-                            textColor = textColor,
-                            modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(1f),
-                            onClick = { viewModel.onCalculatorKeyPress(actionKey) }
+            // Display Panel: A large, minimal black display area for calculations
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .background(Color.Black)
+                    .padding(horizontal = 24.dp, vertical = 20.dp),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    if (expressionPreview.isNotBlank()) {
+                        Text(
+                            text = expressionPreview,
+                            color = Color.Gray,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.End,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
+                    
+                    Text(
+                        text = displayText,
+                        color = Color.White,
+                        fontSize = if (displayText.length > 8) 42.sp else 64.sp,
+                        fontWeight = FontWeight.Light,
+                        textAlign = TextAlign.End,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.testTag("calculator_display")
+                    )
+                }
+            }
+
+            // Collapse/expand arrow icon right above the button pad on the far left side
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(darkBgColor)
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.UnfoldMore,
+                    contentDescription = "Collapse/Expand keypad",
+                    tint = Color.Gray.copy(alpha = 0.7f),
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
+            // Calculator Buttons Grid Pad
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(darkBgColor)
+                    .padding(start = 16.dp, end = 16.dp, bottom = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                buttons.forEach { row ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        row.forEach { char ->
+                            // Determine background and text colors according to exact specifications
+                            val backColor = when (char) {
+                                "AC", "()", "%", "÷" -> deepBlueCircle
+                                "×", "-", "+" -> deepBlueCircle
+                                "=" -> softMintGreenBg
+                                else -> softDarkGreyBg
+                            }
+                            
+                            val textColor = when (char) {
+                                "AC" -> lightBlueGreyText
+                                "()" -> lightBlueGreyText
+                                "%" -> lightBlueGreyText
+                                "=" -> darkGreenOperatorText
+                                else -> Color.White
+                            }
+
+                            // Map keyboard actions back to standard math symbols as supported by the parser
+                            val actionKey = when (char) {
+                                "÷" -> "/"
+                                "×" -> "*"
+                                else -> char
+                            }
+
+                            CalculatorButton(
+                                text = char,
+                                backgroundColor = backColor,
+                                textColor = textColor,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .aspectRatio(1f),
+                                onClick = { viewModel.onCalculatorKeyPress(actionKey) }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        AnimatedVisibility(
+            visible = showWhitebeardSplash,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier.zIndex(10f)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .clickable(enabled = false) {},
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize().padding(24.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.whitebeard),
+                        contentDescription = "Whitebeard",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.7f)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "The One Piece is real...",
+                        color = Color.White,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "...and so are your passwords 🏴☠️",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "— Edward Newgate, Strongest Man in the World",
+                        color = Color.Gray,
+                        fontSize = 14.sp,
+                        fontStyle = FontStyle.Italic,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }

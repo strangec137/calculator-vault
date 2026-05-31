@@ -1256,7 +1256,7 @@ fun SettingsDialog(
 
                         // Version Tag: Version 1.3.0 (Small, muted grey text directly underneath)
                         Text(
-                            text = "Version 1.3.0",
+                            text = "Log Pose v1.0.0",
                             fontSize = 12.sp,
                             color = Color(0xFF78909C),
                             textAlign = TextAlign.Center

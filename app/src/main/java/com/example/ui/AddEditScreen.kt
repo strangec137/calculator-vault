@@ -28,13 +28,13 @@ data class TemplateChipData(
 )
 
 private val templates = listOf(
-    TemplateChipData("Facebook", "fb1 - "),
-    TemplateChipData("Instagram", "insta 1 - "),
+    TemplateChipData("Email", "E1 - "),
+    TemplateChipData("Facebook", "Fb1 - "),
+    TemplateChipData("Instagram", "Insta 1 - "),
     TemplateChipData("X", "tw1 - "),
     TemplateChipData("WhatsApp", "wa1 - "),
     TemplateChipData("Telegram", "tg1 - "),
     TemplateChipData("LinkedIn", "in1 - "),
-    TemplateChipData("Email", "E1 - "),
     TemplateChipData("Google", "g1 - "),
     TemplateChipData("Microsoft", "ms1 - "),
     TemplateChipData("GitHub", "git1 - "),
