@@ -1,4 +1,4 @@
-# Calculator Vault
+# Calculator
 
 A privacy-focused, dual-purpose Android app built with Kotlin & Jetpack Compose. On the surface it's a fully functional calculator. Hidden inside is a secure, offline password manager — guarded by the Strongest Man in the World. 🏴‍☠️
 
@@ -56,6 +56,8 @@ Then build and run on any Android device (API 24+).
 1. Download the APK from the link above
 2. On your phone: Settings → Security → Enable "Install unknown apps"
 3. Open the APK file and tap Install
+4. If Google Play Protect warns you — tap **"More details"** → **"Install anyway"**
+   This is normal for apps outside the Play Store. The app makes zero internet connections so it's completely safe.
 
 ## build in Android Studio and .
 
